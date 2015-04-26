@@ -103,10 +103,10 @@ public class DetailsActivity extends Activity {
 		intent.putExtra(Intent.EXTRA_SUBJECT, "Details for " + tvName.getText());
 		intent.putExtra(
 				Intent.EXTRA_TEXT,
-				"Address: " + tvAddress.getText() + "\nPhone: "
-						+ tvPhone.getText() + "\nOpen Now: "
-						+ tvopenNow.getText() + "\nPrice Level: "
-						+ tvpriceLevel.getText() + "\nType: "
+				tvAddress.getText() + "\n"
+						+ tvPhone.getText() + "\n"
+						+ tvopenNow.getText() + "\n"
+						+ tvpriceLevel.getText() + "\n"
 						+ tvTypes.getText());
 		startActivity(Intent.createChooser(intent, "Choose an Email client :"));
 	}

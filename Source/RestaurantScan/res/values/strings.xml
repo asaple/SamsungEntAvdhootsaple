@@ -1,0 +1,17 @@
+<resources>
+
+    <string name="app_name">Restaurant Scanner</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Settings</string>
+    <string name="title_activity_restaurant">Restaurant Information</string>
+    <string name="strName">subway</string>
+	<string name="strVicinity">Menands</string>
+	<string name="no_location_detected">No Location service Detected; using sample coordinates</string>
+	<string name="successcoordinates">Obtained location successfully</string>
+	<string name="successcoordinatesupdate">Updated location successfully on interval</string>
+	<string name="edit_message">Enter range in meters</string>
+	<string name="button_send">Reset</string>
+	<string name="button_email">Email Details</string>
+	<string name="button_map">Map Location</string>
+	<string name="Separator">---</string>
+</resources>

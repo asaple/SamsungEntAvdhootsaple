@@ -44,6 +44,7 @@ public class MainActivity extends Activity implements ConnectionCallbacks,
 	private String latitude;
 	private String longitude;
 	private String range;
+	private LocationRequest mLocationRequest;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +99,7 @@ public class MainActivity extends Activity implements ConnectionCallbacks,
 				.addConnectionCallbacks(this)
 				.addOnConnectionFailedListener(this)
 				.addApi(LocationServices.API).build());
+		createLocationRequest();
 
 	}
 
@@ -113,7 +115,7 @@ public class MainActivity extends Activity implements ConnectionCallbacks,
 	public void onConnected(Bundle arg0) {
 		setmLastLocation(LocationServices.FusedLocationApi
 				.getLastLocation(getmGoogleApiClient()));
-
+		startLocationUpdates();
 		if (getmLastLocation() != null) {
 			setLatitude(String.valueOf(getmLastLocation().getLatitude()));
 			setLongitude(String.valueOf(getmLastLocation().getLongitude()));
@@ -178,13 +180,20 @@ public class MainActivity extends Activity implements ConnectionCallbacks,
 		}
 	}
 
-	protected void createandStartLocationRequest() {
-		LocationRequest mLocationRequest = new LocationRequest();
-		mLocationRequest.setInterval(10000);
-		mLocationRequest.setFastestInterval(5000);
-		mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-		LocationServices.FusedLocationApi.requestLocationUpdates(
-				mGoogleApiClient, mLocationRequest, this);
+	protected void createLocationRequest() {
+
+		LocationRequest mLocRequest = new LocationRequest();
+		mLocRequest.setInterval(10000);
+		mLocRequest.setFastestInterval(5000);
+		mLocRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+		setmLocationRequest(mLocRequest);
+
+	}
+	
+	protected void startLocationUpdates() {
+
+	    LocationServices.FusedLocationApi.requestLocationUpdates(
+	            mGoogleApiClient, getmLocationRequest(), this);
 	}
 
 	/**
@@ -193,13 +202,13 @@ public class MainActivity extends Activity implements ConnectionCallbacks,
 	 * */
 	@Override
 	public void onLocationChanged(Location location) {
-		mLastLocation = location;
-		if (mLastLocation != null) {
-			this.latitude = String.valueOf(mLastLocation.getLatitude());
-			this.longitude = String.valueOf(mLastLocation.getLongitude());
+		setmLastLocation(location);
+		if (getmLastLocation() != null) {
+			setLatitude(String.valueOf(getmLastLocation().getLatitude()));
+			setLongitude(String.valueOf(getmLastLocation().getLongitude()));
+		
 			Log.i(RestaurantConstants.INFO, "retrieved coordinates successfully");
-			Toast.makeText(this, R.string.successcoordinatesupdate,
-					Toast.LENGTH_LONG).show();
+
 			updateBindingList();
 		}
 
@@ -259,5 +268,13 @@ public class MainActivity extends Activity implements ConnectionCallbacks,
 
 	public void setRange(String range) {
 		this.range = range;
+	}
+
+	public LocationRequest getmLocationRequest() {
+		return mLocationRequest;
+	}
+
+	public void setmLocationRequest(LocationRequest mLocationRequest) {
+		this.mLocationRequest = mLocationRequest;
 	}
 }

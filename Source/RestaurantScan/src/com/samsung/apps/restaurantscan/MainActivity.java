@@ -117,22 +117,42 @@ public class MainActivity extends Activity implements ConnectionCallbacks,
 				.getLastLocation(getmGoogleApiClient()));
 		startLocationUpdates();
 		if (getmLastLocation() != null) {
-			setLatitude(String.valueOf(getmLastLocation().getLatitude()));
-			setLongitude(String.valueOf(getmLastLocation().getLongitude()));
-			Log.i(RestaurantConstants.INFO,
-					"succesfully retrieved  coordinates");
-
+			String newLatitude = String.valueOf(getmLastLocation().getLatitude());
+			String newLongitude = String.valueOf(getmLastLocation().getLongitude());
+			if (getLatitude() ==null || getLongitude() == null){
+				setLatitude(newLatitude);
+				setLongitude(newLongitude);
+				Log.i(RestaurantConstants.INFO,
+						"succesfully retrieved  coordinates");
+			
+				updateBindingList();
+			}
+			else
+			if (!getLatitude().equalsIgnoreCase(newLatitude) || !getLongitude().equalsIgnoreCase(newLongitude)){
+				setLatitude(newLatitude);
+				setLongitude(newLongitude);
+				Log.i(RestaurantConstants.INFO,
+						"succesfully retrieved  coordinates");
+			
+				updateBindingList();
+			}
+			
+			
 		} else {
 			Log.i(RestaurantConstants.INFO, "Failed to  retrieve  coordinates");
 			Toast.makeText(this, R.string.no_location_detected,
 					Toast.LENGTH_LONG).show();
 			setLatitude("40.7463956");
 			setLongitude("-73.9852992");
+
+
+			updateBindingList();
 		}
-		updateBindingList();
+		
 	}
 
 	private void updateBindingList() {
+		
 		this.restaurantCollection = ListHelper.getRestaurantList(latitude,
 				longitude, range);
 		BinderData bindingData = new BinderData(this, restaurantCollection);
@@ -204,12 +224,35 @@ public class MainActivity extends Activity implements ConnectionCallbacks,
 	public void onLocationChanged(Location location) {
 		setmLastLocation(location);
 		if (getmLastLocation() != null) {
-			setLatitude(String.valueOf(getmLastLocation().getLatitude()));
-			setLongitude(String.valueOf(getmLastLocation().getLongitude()));
+			
+			// truncating latitude longitude to 3 decimals and checking for change; since values are getting changed
+			// even when device is at same location from 4th decimal
+			
+			String newLatitude = String.valueOf(getmLastLocation().getLatitude());
+			String newLongitude = String.valueOf(getmLastLocation().getLongitude());
+			String oldLatitide = getLatitude();
+			String oldLongitude = getLongitude();
+			
+			String oldLatitudeFormatted = String.format("%.5g%n", Double.valueOf(oldLatitide));
+			String oldLongitudeFormatted = String.format("%.5g%n", Double.valueOf(oldLongitude));
 		
-			Log.i(RestaurantConstants.INFO, "retrieved coordinates successfully");
-
-			updateBindingList();
+			
+			String newLatitudeformatted = String.format("%.5g%n", Double.valueOf(newLatitude));
+			String newLongitudeformatted = String.format("%.5g%n", Double.valueOf(newLongitude));
+			
+			
+			// update list only if location has changed
+			if (!oldLatitudeFormatted.equalsIgnoreCase(newLatitudeformatted) || !oldLongitudeFormatted.equalsIgnoreCase(newLongitudeformatted)){
+				Toast.makeText(this, "Location updated; Updating list",
+						Toast.LENGTH_SHORT).show();
+				setLatitude(newLatitude);
+				setLongitude(newLongitude);
+			
+				Log.i(RestaurantConstants.INFO, "retrieved coordinates successfully");
+				
+				updateBindingList();
+			}
+			
 		}
 
 	}
